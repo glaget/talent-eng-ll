@@ -1,6 +1,6 @@
 import json
-import pathlib
 import os
+import pathlib
 from typing import Any
 
 
@@ -8,8 +8,7 @@ class BaseProviderClass:
     """
     Abstract provider class.
     """
-    @staticmethod
-    def get(item_name: str) -> Any:
+    def __getitem__(self, item_name: str) -> Any:
         """Abstract get method. Provides value from configuration source.
         When not implemented will raise NotImplementedError.
 
@@ -22,15 +21,14 @@ class BaseProviderClass:
         Returns:
             Any: Value from the configuration.
         """
-        raise NotImplementedError("get method is not implemented")
+        raise NotImplementedError("__getitem__ method is not implemented")
 
 
 class OSConfigProvider(BaseProviderClass):
     """
     OS enviroment variable configuration provider
     """
-    @staticmethod
-    def get(item_name: str) -> Any:
+    def __getitem__(self, item_name: str) -> Any:
         """Provides value from configuration source based on the item_name.
 
         Args:
@@ -47,10 +45,16 @@ class JSONConfigProvider(BaseProviderClass):
     """
     JSON configuration provider. Implements simple file caching mechanism.
     """
-    cached_files = {}
+    def __init__(self, config_path: pathlib.Path):
+        """Constructor for JSONConfigProvider. Automatically loads the
+           configuration.
 
-    @classmethod
-    def _read_config(self, config_path: pathlib.Path) -> dict:
+        Args:
+            config_path (pathlib.Path): Path to JSON configuration file.
+        """
+        self.loaded_config_file = self._read_config(config_path)
+
+    def _read_config(self, config_path) -> dict:
         """Reads configuration file.
 
         Args:
@@ -60,25 +64,10 @@ class JSONConfigProvider(BaseProviderClass):
             dict: Dictionary containing all the key-value pairs from
                   configuration.
         """
-        config_path_stats = config_path.lstat()
-        # check if cached file is available
-        if str(config_path) in self.cached_files:
-            config_file = self.cached_files[str(config_path)]
-            # check if modification time (ns) is lower or equal,
-            # if yes, we can access the cache
-            if config_path_stats.st_mtime <= config_file["mtime"]:
-                return config_file["data"]
-        # cache is unavailable - read the file
         with open(config_path) as json_file:
-            # update the cached files dict with most up to date info
-            self.cached_files.update({str(config_path): {
-                "mtime": config_path_stats.st_mtime,
-                "data": json.load(json_file)
-            }})
-            return self.cached_files[str(config_path)]["data"]
+            return json.load(json_file)
 
-    @staticmethod
-    def get(item_name: str) -> Any:
+    def __getitem__(self, item_name: str) -> Any:
         """Provides value from configuration source based on the item_name.
 
         Args:
@@ -87,10 +76,8 @@ class JSONConfigProvider(BaseProviderClass):
         Returns:
             Any: Value from the configuration.
         """
-        root_path = pathlib.Path(".").parent.parent.parent
-        path = root_path/"envs_configs"/"devs.json"
-        value = JSONConfigProvider._read_config(path)
-        return value.get(item_name)
+        value = self.loaded_config_file.get(item_name)
+        return value
 
 
 class DummyConfigProvider(BaseProviderClass):
@@ -98,8 +85,7 @@ class DummyConfigProvider(BaseProviderClass):
     Dummy configuration provider. Values provided by this provider
     are hardcoded.
     """
-    @staticmethod
-    def get(item_name: str) -> Any:
+    def __getitem__(self, item_name: str) -> Any:
         """Provides value from configuration source based on the item_name.
 
         Args:

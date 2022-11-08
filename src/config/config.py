@@ -1,3 +1,4 @@
+import pathlib
 from typing import Any, List
 from config_provider import OSConfigProvider, JSONConfigProvider
 from config_provider import BaseProviderClass, DummyConfigProvider
@@ -21,9 +22,10 @@ class Config:
         self._register("BASE_URL")
         self._register("SQL_CONNECTION_STRING")
         self._register("KEY")
+        self._register("ABC")
         # self._register("NOSQL_CONNECTION_STRING")
 
-    def get(self, item_name: str) -> Any:
+    def __getitem__(self, item_name: str) -> Any:
         """Get previously registered item_name from configuration providers.
 
         Args:
@@ -48,7 +50,7 @@ class Config:
                       available
         """
         for provider in self.config_providers:
-            value = provider.get(item_name)
+            value = provider[item_name]
             if value is not None:
                 self.conf_dict[item_name] = value
                 return
@@ -57,7 +59,15 @@ class Config:
 
 
 if __name__ == "__main__":
-    config = Config([OSConfigProvider, JSONConfigProvider, DummyConfigProvider])
-    print(config.get("BASE_URL"))
-    print(config.get("KEY"))
+    import os
+    os.environ["ABC"] = "123123123"
+
+    root_path = pathlib.Path(".").parent.parent.parent
+    config = Config([OSConfigProvider(),
+                     DummyConfigProvider(),
+                     JSONConfigProvider(root_path/"envs_configs"/"devs.json"),
+                     ])
+    print(config["BASE_URL"])
+    print(config["KEY"])
+    print(config["ABC"])
     # print(config.get("NOSQL_CONNECTION_STRING"))
