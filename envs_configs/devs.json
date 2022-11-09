@@ -1,5 +1,8 @@
 {
     "BASE_URL": "google.com",
     "SQL_CONNECTION_STRING": "NOSQL://username@ip:db_name",
-    "KEY": "defonotakey"
+    "KEY": "defonotakey",
+    "SHARED_USER_NAME": "ausername",
+    "SHARED_EMAIL": "ausername@example.com",
+    "DEFAULT_TAG_NAME": "DEFAULT"
 }

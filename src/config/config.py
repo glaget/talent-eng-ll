@@ -1,13 +1,19 @@
 import pathlib
 from typing import Any, List
-from config_provider import OSConfigProvider, JSONConfigProvider
-from config_provider import BaseProviderClass, DummyConfigProvider
+
+from .config_provider import (
+    BaseProviderClass,
+    DummyConfigProvider,
+    JSONConfigProvider,
+    OSConfigProvider,
+)
 
 
 class Config:
     """
     Holds all the settings of your framework
     """
+
     def __init__(self, config_providers: List[BaseProviderClass]) -> None:
         """Initializes the configuration file. Registers configuration item
            names here via _register method.
@@ -22,7 +28,10 @@ class Config:
         self._register("BASE_URL")
         self._register("SQL_CONNECTION_STRING")
         self._register("KEY")
-        self._register("ABC")
+        self._register("SHARED_USER_NAME")
+        self._register("SHARED_EMAIL")
+        self._register("DEFAULT_TAG_NAME")
+        # self._register("ABC")
         # self._register("NOSQL_CONNECTION_STRING")
 
     def __getitem__(self, item_name: str) -> Any:
@@ -54,19 +63,33 @@ class Config:
             if value is not None:
                 self.conf_dict[item_name] = value
                 return
-        raise KeyError(f"Key {item_name} "
-                       "not found in any of the configuration providers")
+        raise KeyError(
+            f"Key {item_name} " "not found in any of the configuration providers"
+        )
 
+
+root_path = pathlib.Path(".").parent.parent.parent
+config = Config(
+    [
+        OSConfigProvider(),
+        DummyConfigProvider(),
+        JSONConfigProvider(root_path / "envs_configs" / "devs.json"),
+    ]
+)
 
 if __name__ == "__main__":
     import os
+
     os.environ["ABC"] = "123123123"
 
     root_path = pathlib.Path(".").parent.parent.parent
-    config = Config([OSConfigProvider(),
-                     DummyConfigProvider(),
-                     JSONConfigProvider(root_path/"envs_configs"/"devs.json"),
-                     ])
+    config = Config(
+        [
+            OSConfigProvider(),
+            DummyConfigProvider(),
+            JSONConfigProvider(root_path / "envs_configs" / "devs.json"),
+        ]
+    )
     print(config["BASE_URL"])
     print(config["KEY"])
     print(config["ABC"])

@@ -8,6 +8,7 @@ class BaseProviderClass:
     """
     Abstract provider class.
     """
+
     def __getitem__(self, item_name: str) -> Any:
         """Abstract get method. Provides value from configuration source.
         When not implemented will raise NotImplementedError.
@@ -28,6 +29,7 @@ class OSConfigProvider(BaseProviderClass):
     """
     OS enviroment variable configuration provider
     """
+
     def __getitem__(self, item_name: str) -> Any:
         """Provides value from configuration source based on the item_name.
 
@@ -45,6 +47,7 @@ class JSONConfigProvider(BaseProviderClass):
     """
     JSON configuration provider. Implements simple file caching mechanism.
     """
+
     def __init__(self, config_path: pathlib.Path):
         """Constructor for JSONConfigProvider. Automatically loads the
            configuration.
@@ -85,6 +88,7 @@ class DummyConfigProvider(BaseProviderClass):
     Dummy configuration provider. Values provided by this provider
     are hardcoded.
     """
+
     def __getitem__(self, item_name: str) -> Any:
         """Provides value from configuration source based on the item_name.
 
@@ -94,7 +98,5 @@ class DummyConfigProvider(BaseProviderClass):
         Returns:
             Any: Value from the configuration.
         """
-        values = {
-            "KEY": "12kfm33md#!@k123"
-        }
+        values = {"KEY": "12kfm33md#!@k123"}
         return values.get(item_name)
