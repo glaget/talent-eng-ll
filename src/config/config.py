@@ -76,21 +76,3 @@ config = Config(
         JSONConfigProvider(root_path / "envs_configs" / "devs.json"),
     ]
 )
-
-if __name__ == "__main__":
-    import os
-
-    os.environ["ABC"] = "123123123"
-
-    root_path = pathlib.Path(".").parent.parent.parent
-    config = Config(
-        [
-            OSConfigProvider(),
-            DummyConfigProvider(),
-            JSONConfigProvider(root_path / "envs_configs" / "devs.json"),
-        ]
-    )
-    print(config["BASE_URL"])
-    print(config["KEY"])
-    print(config["ABC"])
-    # print(config.get("NOSQL_CONNECTION_STRING"))
