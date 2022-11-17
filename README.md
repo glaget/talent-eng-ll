@@ -42,3 +42,10 @@ To run tests simply:
 ```bash
 python3 -m pytest
 ```
+
+# Before commit
+Run black and isort
+```bash
+isort .
+black .
+```
