@@ -29,12 +29,21 @@ pip3 install -r requirements.txt
 |Directory|Purpose|
 |---|---|
 |`src/config`|Configuration and configuration providers definitions.|
+|`src/applications`|Application modules.|
 |`src/data`|Data definitions and data descriptors.|
 |`src/models`|Data models.|
 |`src/providers`|Data providers and processors.|
 |`envs_configs/`|Enviroment configuration. Contains JSON files to use with JSONConfigProvider.|
 |`tests/`|Tests.|
 |`conftest.py`|Configuration file for pyTest.|
+
+# Configuration
+## Github
+To use Github API put these variables into your enviroment:
+|Variable|Description|
+|--|--|
+|`GITHUB_TOKEN`|Github access token|
+|`GITHUB_USERNAME`|Github username|
 
 # How to run tests
 
