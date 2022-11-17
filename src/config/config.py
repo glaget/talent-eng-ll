@@ -25,14 +25,10 @@ class Config:
         self.config_providers = config_providers
 
         self.conf_dict = {}
-        self._register("BASE_URL")
         self._register("SQL_CONNECTION_STRING")
-        self._register("KEY")
-        self._register("SHARED_USER_NAME")
-        self._register("SHARED_EMAIL")
-        self._register("DEFAULT_TAG_NAME")
-        # self._register("ABC")
-        # self._register("NOSQL_CONNECTION_STRING")
+        self._register("GITHUB_BASE_URL")
+        self._register("GITHUB_USERNAME")
+        self._register("GITHUB_TOKEN")
 
     def __getitem__(self, item_name: str) -> Any:
         """Get previously registered item_name from configuration providers.
