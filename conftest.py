@@ -1,12 +1,13 @@
 import pytest
 import requests
 
+from src.applications.github_api import GitHubApi
+from src.applications.github_ui import GitHubUI
 from src.config.config import config
 from src.models.product import Product
 from src.models.tag import Tag
 from src.models.user import User
 from src.providers.dummy_providers import DummyDatabase
-from src.applications.github_api import GitHubApi
 
 
 @pytest.fixture(scope="class")
@@ -18,9 +19,7 @@ def user_fixture():
 
 @pytest.fixture(scope="class")
 def product_fixture():
-    product = Product(
-        "XBlock", 20, tags={Tag(config["DEFAULT_TAG_NAME"]), Tag("CONSOLE")}
-    )
+    product = Product("XBlock", 20, tags={Tag(config["DEFAULT_TAG_NAME"]), Tag("CONSOLE")})
     yield product
     del product
 
@@ -33,6 +32,7 @@ def database_provider_fixture():
     # dummy database clear
     db.tables = {"products": [], "users": []}
     db.disconnect()
+
 
 @pytest.fixture(scope="class")
 def repo_name():
@@ -49,3 +49,11 @@ def github_api(repo_name):
     except requests.exceptions.HTTPError:
         pass
     del github_api_instance
+
+
+@pytest.fixture(scope="module")
+def github_ui_app():
+    github_ui_app = GitHubUI()
+    github_ui_app.open_base_page()
+    yield github_ui_app
+    github_ui_app.driver.close()

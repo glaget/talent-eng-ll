@@ -1,8 +1,11 @@
-from .github_urls import Urls
-from src.config.config import config
-from urllib.parse import urljoin
 import json
+from urllib.parse import urljoin
+
 import requests
+
+from src.config.config import config
+
+from .github_urls import Urls
 
 
 class GitHubApi:
@@ -37,11 +40,11 @@ class GitHubApi:
         return self._get_and_return_dict(url=self._create_url(Urls.user))
 
     def create_repository(self, repo_name: str, description: str):
-        return self._post_and_return_dict(url=self._create_url(Urls.create_repository),
-                                          data=json.dumps({"name": repo_name,
-                                                           "description": description,
-                                                           "private": False}))
-    
+        return self._post_and_return_dict(
+            url=self._create_url(Urls.create_repository),
+            data=json.dumps({"name": repo_name, "description": description, "private": False}),
+        )
+
     def list_repositories_per_user(self, username=None):
         if username is None:
             username = self.current_user
@@ -56,5 +59,4 @@ class GitHubApi:
         return self._delete_and_return_dict(url=self._create_url(formatted_url))
 
     def find_repository_by_repo_name(self, repo_name: str):
-        return self._get_and_return_dict(url=self._create_url(Urls.search_repositories),
-                                         params={"q": repo_name})
+        return self._get_and_return_dict(url=self._create_url(Urls.search_repositories), params={"q": repo_name})
