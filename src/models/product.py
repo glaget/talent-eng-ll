@@ -6,10 +6,7 @@ class Product:
 
     def __str__(self):
         tags_as_strings = {str(t) for t in self.tags}
-        return (
-            f"Product: name={self.name}, quantity={self.quantity}, "
-            f"tags={''.join(tags_as_strings)}"
-        )
+        return f"Product: name={self.name}, quantity={self.quantity}, " f"tags={''.join(tags_as_strings)}"
 
     def create_in_database(self, db):
         print(f"Created a {str(self)} in db {db}")

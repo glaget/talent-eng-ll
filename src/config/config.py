@@ -27,8 +27,11 @@ class Config:
         self.conf_dict = {}
         self._register("SQL_CONNECTION_STRING")
         self._register("GITHUB_BASE_URL")
+        self._register("GITHUB_UI_URL")
         self._register("GITHUB_USERNAME")
         self._register("GITHUB_TOKEN")
+        self._register("GITHUB_UI_SHARED_USERNAME")
+        self._register("GITHUB_UI_SHARED_PASSWORD")
 
     def __getitem__(self, item_name: str) -> Any:
         """Get previously registered item_name from configuration providers.
@@ -59,9 +62,7 @@ class Config:
             if value is not None:
                 self.conf_dict[item_name] = value
                 return
-        raise KeyError(
-            f"Key {item_name} " "not found in any of the configuration providers"
-        )
+        raise KeyError(f"Key {item_name} " "not found in any of the configuration providers")
 
 
 root_path = pathlib.Path(".").parent.parent.parent
